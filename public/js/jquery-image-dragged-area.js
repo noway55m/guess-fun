@@ -205,89 +205,24 @@
 
 				$.each(dataArray, function(index, file) {
 
-					var img = new Image(); // get the image element
-					img.src = dataArray[index].value;					
-					imageDisplayEffect(img);
+					var img = new Image(),
+						appendArea = $('#chooseEffect');
+					img.src = dataArray[index].value;
+					//imageDisplayEffect(img);
 
-					// append original image
-					
-					
-//					console.log(img.width)
-//					console.log(img.height)
-//					var div1 = document.createElement('div');
-//					var div2 = document.createElement('div');
-//					var div3 = document.createElement('div');
-//					div1.style.width = "100px";
-//					div1.style.height = "100px";					
-//					div1.style.display = "inline-block";										
-//					div1.style.backgroundImage = "url(" + img.src + ")";
-//					div1.style.backgroundPosition = "0px 0px";
-//					div2.style.width = "100px";
-//					div2.style.height = "100px";
-//					div2.style.display = "inline-block";															
-//					div2.style.backgroundImage = "url(" + img.src + ")";
-//					div2.style.backgroundPosition = "-100px 0px";
-//					div3.style.width = "100px";
-//					div3.style.height = "100px";
-//					div3.style.display = "inline-block";															
-//					div3.style.backgroundImage = "url(" + img.src + ")";
-//					div3.style.backgroundPosition = "-200px 0px";										
-//					$('#chooseEffect').append(div1)
-//					$('#chooseEffect').append(div2)
-//					$('#chooseEffect').append(div3)					
-//					$('#chooseEffect').append('<br/>')
-//					
-					// Append new image
-//					var newimg = Pixastic.process(img, "coloradjust", {red:0.5,green:0,blue:0});
-//					console.log(newimg);
-//					$('#chooseEffect').append(newimg)
+					$(img).imageDisplay({
 
-					//$('#chooseEffect').append('<img src='+ effect_img.src + ' alt=ddd />');
-					//effect_img.appendTo( $('<div/>').css('display', 'none') );
+						defaultEffect : "moving",
 
-//					$.post('upload.php', dataArray[index], function(data) {
-//
-//						var fileName = dataArray[index].name;
-//						++x;
-//
-//						// Change the bar to represent how much has loaded
-//						$('#loading-bar .loading-color').css({'width' : totalPercent*(x)+'%'});
-//
-//						if(totalPercent*(x) == 100) {
-//							// Show the upload is complete
-//							$('#loading-content').html('Uploading Complete!');
-//
-//							// Reset everything when the loading is completed
-//							setTimeout(restartFiles, 500);
-//
-//						} else if(totalPercent*(x) < 100) {
-//
-//							// Show that the files are uploading
-//							$('#loading-content').html('Uploading '+fileName);
-//
-//						}
-//
-//						// Show a message showing the file URL.
-//						var dataSplit = data.split(':');
-//						if(dataSplit[1] == 'uploaded successfully') {
-//							var realData = '<li><a href="images/'+dataSplit[0]+'">'+fileName+'</a> '+dataSplit[1]+'</li>';
-//
-//							$('#uploaded-files').append('<li><a href="images/'+dataSplit[0]+'">'+fileName+'</a> '+dataSplit[1]+'</li>');
-//
-//							// Add things to local storage
-//							if(window.localStorage.length == 0) {
-//								y = 0;
-//							} else {
-//								y = window.localStorage.length;
-//							}
-//
-//							window.localStorage.setItem(y, realData);
-//
-//						} else {
-//							$('#uploaded-files').append('<li><a href="images/'+data+'. File Name: '+dataArray[index].name+'</li>');
-//						}
-//
-//					});
+						appendArea : "#chooseEffect",
+
+						duration: 5000,
+
+						widthUnit: 100,
+
+						heightUnit: 100
+
+					});
 
 				});
 
@@ -326,21 +261,21 @@
 
 
 function imageDisplayEffect(img, appendArea, type){
-	
-	
+
+
 	var origin_img_width = img.width;
 	var origin_img_height = img.height;
-	
+
 	var default_width_unit = 100;
 	var default_height_unit = 100;
-	
+
 	var horizontal_number = Math.ceil(origin_img_width/default_width_unit);
 	var vertical_number = Math.ceil(origin_img_height/default_height_unit);
-	
+
 	for(var i=1; i<=vertical_number; i++){
-		
+
 		for(var j=1; j<=horizontal_number; j++){
-			
+
 			var div = document.createElement('div');
 			$(div).css({
 				width: default_width_unit + "px",
@@ -348,55 +283,55 @@ function imageDisplayEffect(img, appendArea, type){
 				opacity: 0,
 				display: "inline-block",
 				backgroundImage: "url(" + img.src + ")"
-				
+
 			});
 			div.style.backgroundPosition =  (-(parseInt(j)-1) * parseInt(default_width_unit)) + "px " + (-(parseInt(i)-1) * parseInt(default_width_unit)) + "px";
 			$('#chooseEffect').append(div);
-			
+
 			if(type){
-				
+
 				console.log("opacity effect")
 				$(div).animate({
 						opacity: 1
 				}, i * j * 3000);
-				
+
 			}else{
-				
+
 				console.log("move effect")
 				$(div).css({
 					position: "absolute",
 					top: (random(0, $(window).height()) + 0) + "px",
 					left: (random(0, $(window).width()) + 0) + "px"
 				});
-				
+
 				$(div).animate({
 					opacity: 1
 				}, i * 1000 + j * 400)
-				
+
 				$(div).animate({
 					top: $('#chooseEffect').offset().top + i * default_width_unit + "px",
 					left : $('#chooseEffect').offset().left  + j * default_height_unit + "px"
 				}, i * j * random(2000, 4000));
-				
+
 			}
-			
+
 			if(j == horizontal_number)
 				$('#chooseEffect').append("<br/>")
-		}			
-			
-	}
-	
-	for(var i=0; i<vertical_number; i++){
-		
-		for(var j=0; j<horizontal_number; j++){
-		
-			
-			
 		}
-		
-	}	
-	
-	
+
+	}
+
+	for(var i=0; i<vertical_number; i++){
+
+		for(var j=0; j<horizontal_number; j++){
+
+
+
+		}
+
+	}
+
+
 }
 
 
