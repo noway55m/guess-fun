@@ -4,44 +4,48 @@
 	// Drop the item in the drop box.
 	$.event.props.push('dataTransfer');
 
-  	// Avoid console execption on IE browser
+	// Avoid console execption on IE browser
 	if (typeof console === "undefined" || typeof console.log === "undefined") {
 		console = {};
-		console.log = function () { };
+		console.log = function() {
+		};
 	}
 
 	// Declare imagesDraggedArea class
 	$.fn.imagesDraggedArea = function(options) {
 
+		/* jshint multistr: true */
+		var defaultHtml = '<div class="drop-files" ondragover="return false"> Drop Images Here </div> \
+			<div id="uploaded-holder"> \
+			<div id="dropped-files"> \
+				<div id="upload-button"> \
+					<a href="#" class="upload">Use</a> \
+					<a href="#" class="delete">Remove</a> \
+					<span>0 Files</span> \
+				</div> \
+			</div> \
+			<div id="extra-files"> \
+				<div class="number"> 0 </div> \
+				<div id="file-list"> \
+					<ul></ul> \
+				</div> \
+			</div> \
+		</div> \
+		<div id="loading"> \
+			<div id="loading-bar"> \
+				<div class="loading-color"></div> \
+			</div> \
+			<div id="loading-content">Uploading file.jpg</div> \
+		</div> \
+		<div id="file-name-holder"> \
+			<ul id="uploaded-files"> \
+				<h1>Uploaded Files</h1> \
+			</ul>\
+		</div>';
+
 		return this.each(function() {
 
-			$(this).html('<div class="drop-files" ondragover="return false"> Drop Images Here </div> \
-			<div id="uploaded-holder"> \
-				<div id="dropped-files"> \
-					<div id="upload-button"> \
-						<a href="#" class="upload">Use</a> \
-						<a href="#" class="delete">Remove</a> \
-						<span>0 Files</span> \
-					</div> \
-				</div> \
-				<div id="extra-files"> \
-					<div class="number"> 0 </div> \
-					<div id="file-list"> \
-						<ul></ul> \
-					</div> \
-				</div> \
-			</div> \
-			<div id="loading"> \
-				<div id="loading-bar"> \
-					<div class="loading-color"></div> \
-				</div> \
-				<div id="loading-content">Uploading file.jpg</div> \
-			</div> \
-			<div id="file-name-holder"> \
-				<ul id="uploaded-files"> \
-					<h1>Uploaded Files</h1> \
-				</ul>\
-			</div>');
+			$(this).html(defaultHtml);
 
 
 			var settings = {},
@@ -51,10 +55,9 @@
 				dataArray = []; // Data array for put all of the data URIs
 
 			// Overide the defaultOptions from options argument
-			$.extend(settings, {});
-			this.settings = settings;
+			this.settings = $.extend(settings, options);
 
-			// Bind the drop event to the dropzone.
+			// Set event control on dropped zone.
 			var dropzone = $('.drop-files');
 			dropzone.on('dragenter', function() {
 				$(this).css({'box-shadow' : 'inset 0px 0px 20px rgba(0, 0, 0, 0.1)', 'border' : '4px dashed #bb2b2b'});
@@ -83,26 +86,25 @@
 					opacity: 100
 				}, 350);
 
-
 				// For each file
 				$.each(files, function(index, file) {
 
 					// Some error messaging
 					if (!files[index].type.match('image.*')) {
 
-						if(errMessage == 0) {
+						if(errMessage === 0) {
 							$('#drop-files').html('Hey! Images only');
 							++errMessage;
 						}
-						else if(errMessage == 1) {
+						else if(errMessage === 1) {
 							$('#drop-files').html('Stop it! Images only!');
 							++errMessage;
 						}
-						else if(errMessage == 2) {
+						else if(errMessage === 2) {
 							$('#drop-files').html("Can't you read?! Images only!");
 							++errMessage;
 						}
-						else if(errMessage == 3) {
+						else if(errMessage === 3) {
 							$('#drop-files').html("Fine! Keep dropping non-images.");
 							errMessage = 0;
 						}
@@ -120,43 +122,43 @@
 					// Start a new instance of FileReader
 					var fileReader = new FileReader();
 
-						// When the filereader loads initiate a function
-						fileReader.onload = (function(file) {
+					// When the filereader loads initiate a function
+					fileReader.onload = (function(file) {
 
-							return function(e) {
+						return function(e) {
 
-								// Push the data URI into an array
-								dataArray.push({name : file.name, value : this.result});
+							// Push the data URI into an array
+							dataArray.push({name : file.name, value : this.result});
 
-								// Move each image 40 more pixels across
-								z = z+40;
-								var image = this.result;
+							// Move each image 40 more pixels across
+							z = z+40;
+							var image = this.result;
 
 
-								// Just some grammatical adjustments
-								if(dataArray.length == 1) {
-									$('#upload-button span').html("1 file to be uploaded");
-								} else {
-									$('#upload-button span').html(dataArray.length+" files to be uploaded");
-								}
-								// Place extra files in a list
-								if($('#dropped-files > .image').length < maxFiles) {
-									// Place the image inside the dropzone
-									$('#dropped-files').append('<div class="image" style="left: '+z+'px; background: url('+image+'); background-size: cover;"> </div>');
-								}
-								else {
+							// Just some grammatical adjustments
+							if(dataArray.length == 1) {
+								$('#upload-button span').html("1 file to be uploaded");
+							} else {
+								$('#upload-button span').html(dataArray.length+" files to be uploaded");
+							}
+							// Place extra files in a list
+							if($('#dropped-files > .image').length < maxFiles) {
+								// Place the image inside the dropzone
+								$('#dropped-files').append('<div class="image" style="left: '+z+'px; background: url('+image+'); background-size: cover;"> </div>');
+							}
+							else {
 
-									$('#extra-files .number').html('+'+($('#file-list li').length + 1));
-									// Show the extra files dialogue
-									$('#extra-files').show();
+								$('#extra-files .number').html('+'+($('#file-list li').length + 1));
+								// Show the extra files dialogue
+								$('#extra-files').show();
 
-									// Start adding the file name to the file list
-									$('#extra-files #file-list ul').append('<li>'+file.name+'</li>');
+								// Start adding the file name to the file list
+								$('#extra-files #file-list ul').append('<li>'+file.name+'</li>');
 
-								}
-							};
+							}
+						};
 
-						})(files[index]);
+					})(files[index]);
 
 					// For data URI purposes
 					fileReader.readAsDataURL(file);
@@ -166,29 +168,34 @@
 
 			});
 
+			function restartFiles() {
 
-			 function restartFiles() {
+				// This is to set the loading bar back to its default
+				// state
+				$('#loading-bar .loading-color').css({
+					'width' : '0%'
+				});
+				$('#loading').css({
+					'display' : 'none'
+				});
+				$('#loading-content').html(' ');
+				// --------------------------------------------------------
 
-					// This is to set the loading bar back to its default state
-					$('#loading-bar .loading-color').css({'width' : '0%'});
-					$('#loading').css({'display' : 'none'});
-					$('#loading-content').html(' ');
-					// --------------------------------------------------------
+				// We need to remove all the images and li elements as
+				// appropriate. We'll also make the upload button
+				// disappear
 
-					// We need to remove all the images and li elements as
-					// appropriate. We'll also make the upload button disappear
+				$('#upload-button').hide();
+				$('#dropped-files > .image').remove();
+				$('#extra-files #file-list li').remove();
+				$('#extra-files').hide();
+				$('#uploaded-holder').hide();
 
-					$('#upload-button').hide();
-					$('#dropped-files > .image').remove();
-					$('#extra-files #file-list li').remove();
-					$('#extra-files').hide();
-					$('#uploaded-holder').hide();
+				// And finally, empty the array/set z to -40
+				dataArray.length = 0;
+				z = -40;
 
-					// And finally, empty the array/set z to -40
-					dataArray.length = 0;
-					z = -40;
-
-					return false;
+				return false;
 			}
 
 			$('#upload-button .delete').click(restartFiles);
@@ -196,33 +203,29 @@
 
 			$('#upload-button .upload').click(function() {
 
-				//$("#loading").show();
-				var totalPercent = 100 / dataArray.length;
-				var x = 0;
-				var y = 0;
-
-				$('#loading-content').html('Uploading '+dataArray[0].name);
-
+				$('#loading-content').html('Uploading '+ dataArray[0].name);
 				$.each(dataArray, function(index, file) {
 
-					var img = new Image(),
-						appendArea = $('#chooseEffect');
+					var img = new Image();
 					img.src = dataArray[index].value;
-					//imageDisplayEffect(img);
+					$(img).appendTo("#uploadedImageZone");
 
-					$(img).imageDisplay({
-
-						defaultEffect : "moving",
-
-						appendArea : "#chooseEffect",
-
-						duration: 5000,
-
-						widthUnit: 100,
-
-						heightUnit: 100
-
-					});
+//					var img = new Image();
+//					img.src = dataArray[index].value;
+//
+//					$(img).imageDisplay({
+//
+//						defaultEffect : "moving",
+//
+//						appendArea : "#chooseEffect",
+//
+//						duration: 5000,
+//
+//						widthUnit: 100,
+//
+//						heightUnit: 100
+//
+//					});
 
 				});
 
@@ -236,7 +239,6 @@
 				$('#file-list').hide();
 			});
 
-
 			// Append the localstorage the the uploaded files section
 			if(window.localStorage.length > 0) {
 				$('#uploaded-files').fadeIn();
@@ -244,7 +246,7 @@
 					var key = window.localStorage.key(t);
 					var value = window.localStorage[key];
 					// Append the list items
-					if(value != undefined || value != '') {
+					if(value !== undefined || value !== '') {
 						$('#uploaded-files').append(value);
 					}
 				}
@@ -252,89 +254,9 @@
 				$('#uploaded-files').fadeOut();
 			}
 
-		})
+		});
 
 
 	};
 
-}($))
-
-
-function imageDisplayEffect(img, appendArea, type){
-
-
-	var origin_img_width = img.width;
-	var origin_img_height = img.height;
-
-	var default_width_unit = 100;
-	var default_height_unit = 100;
-
-	var horizontal_number = Math.ceil(origin_img_width/default_width_unit);
-	var vertical_number = Math.ceil(origin_img_height/default_height_unit);
-
-	for(var i=1; i<=vertical_number; i++){
-
-		for(var j=1; j<=horizontal_number; j++){
-
-			var div = document.createElement('div');
-			$(div).css({
-				width: default_width_unit + "px",
-				height: default_height_unit + "px",
-				opacity: 0,
-				display: "inline-block",
-				backgroundImage: "url(" + img.src + ")"
-
-			});
-			div.style.backgroundPosition =  (-(parseInt(j)-1) * parseInt(default_width_unit)) + "px " + (-(parseInt(i)-1) * parseInt(default_width_unit)) + "px";
-			$('#chooseEffect').append(div);
-
-			if(type){
-
-				console.log("opacity effect")
-				$(div).animate({
-						opacity: 1
-				}, i * j * 3000);
-
-			}else{
-
-				console.log("move effect")
-				$(div).css({
-					position: "absolute",
-					top: (random(0, $(window).height()) + 0) + "px",
-					left: (random(0, $(window).width()) + 0) + "px"
-				});
-
-				$(div).animate({
-					opacity: 1
-				}, i * 1000 + j * 400)
-
-				$(div).animate({
-					top: $('#chooseEffect').offset().top + i * default_width_unit + "px",
-					left : $('#chooseEffect').offset().left  + j * default_height_unit + "px"
-				}, i * j * random(2000, 4000));
-
-			}
-
-			if(j == horizontal_number)
-				$('#chooseEffect').append("<br/>")
-		}
-
-	}
-
-	for(var i=0; i<vertical_number; i++){
-
-		for(var j=0; j<horizontal_number; j++){
-
-
-
-		}
-
-	}
-
-
-}
-
-
-function random(min,max) {
-	return Math.ceil(Math.random()*(max-min+1)+min-1);
-}
+}($));

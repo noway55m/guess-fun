@@ -122,16 +122,32 @@
         <!-- Choose Effect System
         ================================================== -->
         <section id="chooseEffect">
-          <div class="page-header">
-            <h1>Choose Effect System</h1>
-          </div>
+
+        	<!-- Title Header -->
+          	<div class="page-header">
+            	<h1>Choose Effect System</h1>
+          	</div>
+
+        	<!-- Effect Button -->
+			<div class="btn-group">
+			  <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
+			    Effect
+			    <span class="caret"></span>
+			  </a>
+			  <ul class="dropdown-menu">
+			    <!-- dropdown menu links -->
+				<li><a href="#fading">Fading</a></li>
+				<li><a href="#moving">Moving</a></li>
+				<li><a href="#irregulating">irregulating</a></li>
+			  </ul>
+			</div>
+			<button class="btn" type="button">Preview</button>
+
+			<!-- Uploaded Image Zone  -->
+          	<div id="uploadedImageZone"></div>
 			<br/>
 			<br/>
-			<div>sakfsalfjslc</div>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
+			<br/>
 			<br/>
 		</section>
 
@@ -231,10 +247,8 @@
     <script src="./js/bootstrap-carousel.js"></script>
     <script src="./js/bootstrap-typeahead.js"></script>
     <script src="./js/bootstrap-affix.js"></script>
-
     <script src="./js/holder/holder.js"></script>
     <script src="./js/google-code-prettify/prettify.js"></script>
-
     <script src="./js/application.js"></script>
 
 	<!-- Add by frank -->
@@ -244,7 +258,19 @@
 	<script src="./js/jquery-image-dragged-area.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+
+			// Upload Image controll
 			$("#upload-image-area").imagesDraggedArea();
+
+			// Effect choose control
+			$("#chooseEffect > .btn-group > ul li a").click(function(){
+
+				console.log(this);
+				console.log($(this))
+				console.log($(this).attr("href"));
+
+			});
+
 		})
 	</script>
 

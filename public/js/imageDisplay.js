@@ -2,149 +2,34 @@
 
 	$.fn.imageDisplay = function(options){
 
-		return this.each(function(){
+		// Default options
+		var opts = $.extend({
 
-			console.log($.fn.imageDisplay.options)
+			effect : "moving",
 
-			var opts = $.extend($.fn.imageDisplay.options, options);
-			$.imageDisplay.methods.loadImg(this, opts.appendArea, opts.defaultEffect);
+			appendArea : "body",
 
-		});
+			duration: 5000,
 
-	};
+			widthUnit: 100,
 
-	$.fn.imageDisplay.prototype.options = {
+			heightUnit: 100
 
-		defaultEffect : "moving",
+		}, options);
 
-		appendArea : "body",
+		// Default effect and methods
+		var methods = {
 
-		duration: 5000,
+			"fading" : function(div, i, j){
 
-		widthUnit: 100,
-
-		heightUnit: 100
-
-	};
-
-	$.fn.imageDisplay.prototype.methods = {
-
-
-		"fading" : function(div){
-
-			$(div).animate({
-					opacity: 1
-			}, i * j * 3000);
-
-		},
-
-		"moving" : function(div){
-
-			$(div).css({
-				position: "absolute",
-				top: (random(0, $(window).height()) + 0) + "px",
-				left: (random(0, $(window).width()) + 0) + "px"
-			});
-
-			$(div).animate({
-				opacity: 1
-			}, i * 1000 + j * 400);
-
-			$(div).animate({
-				top: $('#chooseEffect').offset().top + i * default_width_unit + "px",
-				left : $('#chooseEffect').offset().left  + j * default_height_unit + "px"
-			}, i * j * random(2000, 4000));
-
-		},
-
-		"loadImg" : function(img, appendArea, type){
-
-			var origin_img_width = img.width,
-				origin_img_height = img.height,
-				default_width_unit = $.fn.imageDisplay.options.widthUnit,
-				default_height_unit = $.fn.imageDisplay.options.heightUnit,
-				horizontal_number = Math.ceil(origin_img_width/default_width_unit),
-				vertical_number = Math.ceil(origin_img_height/default_height_unit);
-
-			for(var i=1; i<=vertical_number; i++){
-
-				for(var j=1; j<=horizontal_number; j++){
-
-					var div = document.createElement('div');
-					$(div).css({
-						width: default_width_unit + "px",
-						height: default_height_unit + "px",
-						opacity: 0,
-						display: "inline-block",
-						backgroundImage: "url(" + img.src + ")"
-
-					});
-					div.style.backgroundPosition =  (-(parseInt(j)-1) * parseInt(default_width_unit)) + "px " + (-(parseInt(i)-1) * parseInt(default_width_unit)) + "px";
-					$('#chooseEffect').append(div);
-
-					if(type){
-
-						console.log("opacity effect")
-						$.fn.imageDisplay.fading(div);
-
-					}else{
-
-						console.log("move effect")
-						$.fn.imageDisplay.moving(div);
-
-					}
-
-					if(j == horizontal_number)
-						$('#chooseEffect').append("<br/>")
-
-				}
-
-			}// end for
-
-		}
-
-	}
-
-}(window.jQuery));
-
-function imageDisplayEffect(img, appendArea, type){
-
-
-	var origin_img_width = img.width;
-	var origin_img_height = img.height;
-
-	var default_width_unit = 100;
-	var default_height_unit = 100;
-
-	var horizontal_number = Math.ceil(origin_img_width/default_width_unit);
-	var vertical_number = Math.ceil(origin_img_height/default_height_unit);
-
-	for(var i=1; i<=vertical_number; i++){
-
-		for(var j=1; j<=horizontal_number; j++){
-
-			var div = document.createElement('div');
-			$(div).css({
-				width: default_width_unit + "px",
-				height: default_height_unit + "px",
-				opacity: 0,
-				display: "inline-block",
-				backgroundImage: "url(" + img.src + ")"
-
-			});
-			div.style.backgroundPosition =  (-(parseInt(j)-1) * parseInt(default_width_unit)) + "px " + (-(parseInt(i)-1) * parseInt(default_width_unit)) + "px";
-			$(appendArea).append(div);
-
-			if(type){
-
-				console.log("opacity effect");
 				$(div).animate({
 						opacity: 1
 				}, i * j * 3000);
 
-			}else{
+			},
 
-				console.log("move effect");
+			"moving" : function(div, i, j){
+
 				$(div).css({
 					position: "absolute",
 					top: (random(0, $(window).height()) + 0) + "px",
@@ -153,35 +38,70 @@ function imageDisplayEffect(img, appendArea, type){
 
 				$(div).animate({
 					opacity: 1
-				}, i * 1000 + j * 400)
+				}, i * 1000 + j * 400);
 
 				$(div).animate({
-					top: $(appendArea).offset().top + i * default_width_unit + "px",
-					left : $(appendArea).offset().left  + j * default_height_unit + "px"
+					top: $('#chooseEffect').offset().top + i * width_unit + "px",
+					left : $('#chooseEffect').offset().left  + j * height_unit + "px"
 				}, i * j * random(2000, 4000));
+
+			},
+
+			"loadImg" : function(img, opts){
+
+				var origin_img_width = img.width,
+					origin_img_height = img.height,
+					width_unit = opts.widthUnit,
+					height_unit = opts.heightUnit,
+					horizontal_number = Math.ceil(origin_img_width/width_unit),
+					vertical_number = Math.ceil(origin_img_height/height_unit),
+					appendArea = opts.appendArea,
+					type = opts.effect;
+
+
+				for(var i=1; i<=vertical_number; i++){
+
+					for(var j=1; j<=horizontal_number; j++){
+
+						var div = document.createElement('div');
+						$(div).css({
+							width: width_unit + "px",
+							height: height_unit + "px",
+							opacity: 0,
+							display: "inline-block",
+							backgroundImage: "url(" + img.src + ")" ,
+							backgroundRepeat: "no-repeat"
+						});
+						div.style.backgroundPosition =  (-(j-1) * width_unit) + "px " + (-(i-1) * width_unit) + "px";
+						$(appendArea).append(div);
+
+						if(type){
+
+							this.fading(div, i, j);
+
+						}else{
+
+							this.moving(div, i, j);
+
+						}
+
+						if(j == horizontal_number)
+							$(appendArea).append("<br/>");
+
+					}
+
+				}// end for
 
 			}
 
-			if(j == horizontal_number)
-				$(appendArea).append("<br/>")
-		}
+		};
 
-	}
+		return this.each(function(){
 
-	for(var i=0; i<vertical_number; i++){
+			methods.loadImg(this, opts);
 
-		for(var j=0; j<horizontal_number; j++){
+		});
 
+	};
 
-
-		}
-
-	}
-
-
-}
-
-
-function random(min,max) {
-	return Math.ceil(Math.random()*(max-min+1)+min-1);
-}
+}(window.jQuery || jQuery));
