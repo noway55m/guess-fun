@@ -1,22 +1,19 @@
-/**
- * New node file
+var	logger = require('log4js').getLogger();
+
+/*
+ * GET main page
  */
-exports.index = function(req, res){
+exports.index = function(req, res) {
 
-  console.log(req.user);
-  //console.log(req.session)
+	logger.info(req.user);
+	if (req.user) {
 
-//  if(req.user){
-//
-//	  res.render('main.html');
-//
-//  }else{
-//
-//	  res.redirect('/login');
-//
-//  }
+		res.render('main.html');
 
-  res.render('main.html');
+	} else {
 
+		res.redirect('/');
+
+	}
 
 };

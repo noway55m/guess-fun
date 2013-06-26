@@ -1,9 +1,19 @@
+var	logger = require('log4js').getLogger();
+
 /*
- * GET home page.
+ * GET index page
  */
-exports.index = function(req, res){
-	
-  console.log(req.session.user);	
-	
-  res.render('index.html');
+exports.index = function(req, res) {
+
+	logger.info(req.user);
+	if (req.user) {
+
+		res.redirect('/main');
+
+	} else {
+
+		res.render('index.html');
+
+	}
+
 };
