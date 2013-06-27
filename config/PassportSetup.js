@@ -48,7 +48,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
 		collection.findOne({
 
 			username : username,
-
 			password : hashPasswd
 
 		}, function(err, data) {
@@ -83,7 +82,7 @@ passport.use(new FacebookStrategy({
 
 	logger.info("accessToken: " + accessToken);
 	logger.info("refreshToken: " + refreshToken);
-	logger.info("profile: " + profile);
+	logger.info(profile);
 	db.collection('user', function(err, collection) {
 
 		collection.findOne({

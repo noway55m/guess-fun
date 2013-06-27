@@ -8,7 +8,9 @@ exports.index = function(req, res) {
 	logger.info(req.user);
 	if (req.user) {
 
-		res.render('main.html');
+		logger.info(req.user);
+
+		res.render('main.html', { user : req.user } );
 
 	} else {
 
@@ -17,3 +19,13 @@ exports.index = function(req, res) {
 	}
 
 };
+
+
+
+function getProfile(){
+
+}
+
+function getFriendList(){
+
+}
