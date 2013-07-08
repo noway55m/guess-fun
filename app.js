@@ -33,7 +33,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser());
+app.use(express.bodyParser({uploadDir: path.join(__dirname, 'public/tmp')}));
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -65,7 +65,7 @@ app.get('/auth/facebook',passport.authenticate('facebook', { scope: ['read_strea
 // Facebook OAuth Code Callback (first handshake)
 app.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/main', failureRedirect: '/' }) );
 
-app.get('/game/create', game.create);
+app.post('/game/create', game.create);
 app.get('/game/list', game.list);
 
 

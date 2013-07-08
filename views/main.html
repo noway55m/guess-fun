@@ -9,10 +9,17 @@
 
     <!-- Le styles -->
     <link href="./stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="./stylesheets/style.css" rel="stylesheet">
     <link href="./stylesheets/bootstrap-responsive.css" rel="stylesheet">
     <link href="./stylesheets/docs.css" rel="stylesheet">
     <link href="./js/google-code-prettify/prettify.css" rel="stylesheet">
+
 	<link href="./stylesheets/image-drag-area.css" rel="stylesheet">
+
+	<link href="./stylesheets/jquery.fileupload-ui.css" rel="stylesheet">
+	<noscript><link href="./stylesheets/jquery.fileupload-ui-noscript.css" rel="stylesheet"></noscript>
+
+
 
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -26,13 +33,21 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./ico/apple-touch-icon-72-precomposed.png">
 	<link rel="apple-touch-icon-precomposed" href="./ico/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="./ico/favicon.png">
+
+    <!-- Get session info -->
+    <script>
+    	var me = {
+    		id : <%= user.fid %>,
+			username : "<%= user.username %>",
+			pic : "https://graph.facebook.com/<%= user.fid %>/picture"
+    	};
+    </script>
+
   </head>
 
-  <body data-spy="scroll" data-target=".bs-docs-sidebar" style="padding-top:0px;">
+  <body style="padding-top:0px;">
 
-    <!-- Navbar
-    ================================================== -->
-
+    <!-- Navbar ================================================== -->
     <div class="navbar navbar-inverse navbar-fixed-top">
 
 	  <div id="logo" style="margin:0px auto;width:400px;z-index:9999;position:fixed;left:10%;right:10%;overflow:hidden;">
@@ -43,12 +58,13 @@
 
       <div class="navbar-inner">
         <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="./logout">logout</a>
+
+		  <!-- Logout Button -->
+		  <a href="./logout" class="brand">logout</a>
+
+		  <!-- Big Head -->
+          <img src="https://graph.facebook.com/<%= user.fid %>/picture" alt="hello, <%= user.username %>" style="float:right;width:48px;" />
+
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="">
@@ -75,169 +91,238 @@
       </div>
     </div>
 
-<!-- Subhead
-================================================== -->
-<header class="jumbotron subhead" id="overview">
-  <div class="container">
-    <h1>Scaffolding</h1>
-    <p class="lead">Bootstrap is built on responsive 12-column grids, layouts, and components.</p>
-  </div>
-</header>
+	<!-- Subhead ================================================== -->
+	<!--
+	<header class="jumbotron subhead" id="overview">
+	  <div class="container">
+	    <h1>Scaffolding</h1>
+	    <p class="lead">Bootstrap is built on responsive 12-column grids, layouts, and components.</p>
+	  </div>
+	</header>
+	-->
 
-  <div class="container">
+  	<div class="container">
 
-	<!-- Personal Info -->
-	<div style="margin:20px auto; text-align: center;">
-		<div> Hello, <%= user.username %> </div>
-		<img src="https://graph.facebook.com/<%= user.fid %>/picture" alt="kddd" />
-	</div>
+	    <div class="row">
+		 <div class="span12">
 
-    <!-- Docs nav
-    ================================================== -->
-    <div class="row">
-      <div class="span3 bs-docs-sidebar">
-        <ul class="nav nav-list bs-docs-sidenav">
-          <li><a href="#uploadImage"><i class="icon-chevron-right"></i>Upload Image</a></li>
-          <li><a href="#chooseEffect"><i class="icon-chevron-right"></i>Choose Effect</a></li>
-          <li><a href="#question"><i class="icon-chevron-right"></i>Question</a></li>
-          <li><a href="#responsive"><i class="icon-chevron-right"></i>Responsive</a></li>
-        </ul>
-      </div>
-      <div class="span9">
-
-        <!-- Grid system
-        ================================================== -->
-        <section id="uploadImage">
-          <div class="page-header">
-            <h1>Upload your image</h1>
-          </div>
-
-			<br/>
-			<br/>
-			<!-- Upload image area -->
-			<div id="upload-image-area"></div>
-
-			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>
-		</section>
-
-        <!-- Choose Effect System
-        ================================================== -->
-        <section id="chooseEffect">
-
-        	<!-- Title Header -->
-          	<div class="page-header">
-            	<h1>Choose Effect System</h1>
-          	</div>
-
-        	<!-- Effect Button -->
-			<div class="btn-group">
-			  <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" id="effectText" href="#">
-			    <span>Effect</span>
-			    <span class="caret"></span>
-			  </a>
-			  <ul class="dropdown-menu">
-			    <!-- dropdown menu links -->
-				<li><a href="#fading">Fading</a></li>
-				<li><a href="#moving">Moving</a></li>
-				<li><a href="#irregulating">irregulating</a></li>
-			  </ul>
+			<!-------------------------------- Game list -------------------------------->
+			<div class="hero-unit" style="height:480px;max-height:500px;overflow:auto;padding-top:100px;">
+				<h3>Game list:</h3>
+				<div id="gameList" class="row show-grid" style="height:300px;margin:auto auto;"></div>
 			</div>
-			<button class="btn" type="button" id="preview">Preview</button>
 
-			<!-- Uploaded Image Zone  -->
-			<p>Not Upload Image Yet</p>
-          	<div id="uploadedImageZone"></div>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-		</section>
+			<!-------------------------------- Game Setup Dialog -------------------------------->
+			<div id="setupDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-        <!-- Question
-        ================================================== -->
-        <section id="question">
-          <div class="page-header">
-            <h1>Question - Answer</h1>
-          </div>
+			  <!-- Navigator -->
+			  <div class="modal-header" >
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <div class="navbar navbar-static" id="setupDialogNavigator">
+					<div class="container" style="width:auto">
+						<a class="brand" href="#">Create Game</a>
+						 <ul class="nav">
+		                    <li><a href="#uploadImage">Upload Image</a></li>
+		                    <li><a href="#chooseEffect">Choose Effect</a></li>
+		                    <li><a href="#question">Question</a></li>
+		                  </ul>
+					</div>
+			    </div>
 
-		  <!-- Question Part -->
-          <div id="questionPart" style="float:left;margin:auto 10px;">
+			  </div>
 
-			<!-- Question Title -->
-			<select id="questionTitle" style="width:150px;">
-			  <option value="1">who</option>
-			  <option value="2">where</option>
-			  <option value="3">what</option>
-			  <option value="4">others</option>
-			</select>
+		      <!-- Dialog body -->
+			  <div class="modal-body" data-spy="scroll" data-target="#setupDialogNavigator"> <!-- data-target=".bs-docs-sidebar" -->
 
-			<!-- Questioning Object -->
-	        <div id="questionObject" style="display:inline; margin:auto 10px;">
-	        	<img src="./img/empty.png" alt="guessed object" style="width: 200px;"/>
-	        </div>
+			     <!-- Upload Image Area -->
+		        <section id="uploadImage" style="padding-top:20px;">
 
-		   </div>
+					<!-- Upload image area -->
+					<div id="upload-image-area" class="container alert alert-info" style="width:350px;height:400px;text-align:center;" class="files">
+						<div style="width:250px;margin:100px auto;">
 
-		  <!-- Answer Part -->
-		  <div style="float:left;margin:auto 10px;">
+							<!-- Title -->
+							<h3 id="uploadImage2">Drag and Drog image here!</h3>
 
-		  		<!-- Answer -->
-				<input type="text" placeholder="Answer" id="answer">
+							<!-- Upload File Input Field -->
+			                <span class="btn btn-success fileinput-button" style="width:150px;">
+			                    <i class="icon-plus icon-white"></i>
+			                    <span>Upload Image...</span>
+			                    <input id="fileupload" type="file" name="files[]" multiple>
+			                </span>
 
-				<!-- Answer Hints -->
-				<button class="btn btn-small btn-primary" type="button" id="addHint">Add Hint</button>
-				<div id="hintArea"></div>
+						</div>
+					</div>
+					<hr/>
+				</section>
 
-		   </div>
+		        <!-- Choose Effect -->
+		        <section id="chooseEffect" style="padding-top:20px;">
 
-		   <div style="clear:both;"></div><br/>
-		   <div style="text-align:center;">
-		    <button class="btn btn-large btn-primary" type="button" id="submitGame" style="margin:20px auto;">Submit</button>
-		   </div>
+		        	<!-- Effect Button -->
+		        	<div id="choose-effect-area" class="container alert alert-info" style="width:350px;height:400px;text-align:center;">
+						<div style="width:250px;margin:100px auto;">
+
+							<!-- Title -->
+				        	<h3 id="chooseEffect2">Choose Effect System</h3>
+
+				        	<!-- Effect Dropdown Button -->
+							<div class="btn-group" data-toggle="tooltip" data-original-title="Choose effect to show your image" id="effectContainer">
+							  <a class="btn btn-inverse dropdown-toggle disabled" data-toggle="" id="effectText" href="#">
+							  <!-- <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" id="effectText" href="#"> -->
+							    <span>Fading</span>
+							    <span class="caret"></span>
+							  </a>
+							  <ul class="dropdown-menu" id="effectDropdownMenu">
+							    <!-- dropdown menu links -->
+							    <li><a href="#">Default Effect - Fading</a></li>
+								<li class="divider"></li>
+								<li><a href="#fading">Fading</a></li>
+								<li><a href="#moving">Moving</a></li>
+								<li><a href="#irregulating">Irregulating</a></li>
+							  </ul>
+							</div>
+
+				        	<!-- Time Button -->
+							<div class="btn-group" data-toggle="tooltip" data-original-title="Duration for play" id="timeContainer" >
+							  <a class="btn btn-inverse dropdown-toggle disabled" data-toggle="" id="timeText" href="#">
+							  <!-- <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" id="timeText" href="#"> -->
+							    <span>60s</span>
+							    <span class="caret"></span>
+							  </a>
+							  <ul class="dropdown-menu" id="timeDropdownMenu">
+							    <li><a href="#">Default Time - 60s</a></li>
+								<li class="divider"></li>
+								<li><a href="#10">10s</a></li>
+								<li><a href="#15">15s</a></li>
+								<li><a href="#20">20s</a></li>
+								<li><a href="#25">25s</a></li>
+								<li><a href="#30">30s</a></li>
+								<li><a href="#35">35s</a></li>
+								<li><a href="#40">40s</a></li>
+								<li><a href="#45">45s</a></li>
+								<li><a href="#50">50s</a></li>
+								<li><a href="#55">55s</a></li>
+								<li><a href="#60">60s</a></li>
+							  </ul>
+							</div>
+
+				        	<!-- Preview Button -->
+							<button class="btn" type="button" id="preview" disabled >Preview</button>
+
+							<!-- Uploaded Image Zone  -->
+							<p id="isUploadedMsg" style="margin-top:15px;">No image upload yet</p>
+				          	<div id="uploadedImageZone"></div>
+
+						</div>
+		        	</div>
+
+		        	<!-- Preview Zone -->
+		        	<div id="privewZone" class="container alert alert-info" style="width:400px;height:auto;text-align:center;display:none;padding:10px;">
+
+						<!-- Time Progress Bar -->
+						<div class="progress progress-striped active" id="timeProgress">
+						  <div class="bar bar-success" style="width: 35%;"></div>
+						  <div class="bar bar-warning" style="width: 20%;"></div>
+						  <div class="bar bar-danger" style="width: 10%;"></div>
+						</div>
+
+			        	<!-- Replay Button -->
+						<button class="btn" type="button" id="previewReplay">
+							<i class="icon-refresh"></i>
+						</button>
+
+			        	<!-- End Button -->
+						<button class="btn" type="button" id="previewEnd">
+							<i class="icon-stop"></i>
+						</button>
+						<hr/>
+
+		        	</div>
+
+				</section>
+
+		        <!-- Question -->
+		        <section id="question" style="padding-top:20px;">
+
+					<div class="container alert alert-info" style="width:350px;height:400px;text-align:center;">
+						<div style="width:250px;margin:100px auto;">
+
+						  <!-- Question Part -->
+				          <div id="questionPart" style="float:left;margin:auto 10px;">
+
+							<!-- Question Title -->
+							<select id="questionTitle" style="width:150px;" id="question2">
+							  <option value="1">who</option>
+							  <option value="2">where</option>
+							  <option value="3">what</option>
+							  <option value="4">others</option>
+							</select>
+
+							<!-- Questioning Object -->
+					        <div id="questionObject" style="display:inline; margin:auto 10px;">
+					        	<img src="./img/empty.png" alt="guessed object" style="width: 200px;"/>
+					        </div>
+
+						   </div>
+
+						  <!-- Answer Part -->
+						  <div>
+
+						  		<!-- Answer -->
+								<input type="text" placeholder="Answer" id="answer"  style="margin-top:20px;"><br/>
+
+								<!-- Answer Hints -->
+								<button class="btn btn-small btn-primary" type="button" id="addHint">Add Hint</button>
+								<div id="hintArea"></div>
+
+						   </div>
+						   <div style="clear:both;"></div><br/>
+						</div>
+					</div>
+
+				</section>
+
+			  </div>
+
+			  <div class="modal-footer">
+			    <button class="btn" data-dismiss="modal" aria-hidden="true" id="setupDialogGameCancel">Cancel</button>
+			    <button class="btn btn-primary disabled" id="setupDialogGameCreate">Create</button>
+			  </div>
+			</div>
 
 
-			<br/>
-			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>
-		</section>
 
-        <!-- Responsive
-        ================================================== -->
-        <section id="responsive">
-          <div class="page-header">
-            <h1>Responsive design</h1>
-          </div>
-			<br/>
-			<br/>
-			<div>sakfsalfjslc</div>
-			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>
-			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>
-			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
-			<br/>			<br/>
 
-		</section>
+
+			<!-- Game Play Dialog -->
+			<div id="playDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <h3 id="myModalLabel">Guessing</h3>
+			  </div>
+			  <div class="modal-body">
+			    <p>One fine body…</p>
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			    <button class="btn btn-primary">Save changes</button>
+			  </div>
+			</div>
+
+
+			<!-- Please Wait Dialog -->
+			<div class="modal hide" id="pleaseWaitDialog" data-keyboard="false">
+		        <div class="modal-header">
+		            <h1>Processing...</h1>
+		        </div>
+		        <div class="modal-body">
+		            <div class="progress progress-striped active">
+		                <div class="bar" style="width: 100%;"></div>
+		            </div>
+		        </div>
+		    </div>
+
 
       </div>
     </div>
@@ -248,7 +333,7 @@
 
     <!-- Footer
     ================================================== -->
-    <footer class="footer">
+    <footer class="footer" style="position:fixed;">
       <div class="container">
         <p>Designed and built with all the love in the world by <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
         <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>, documentation under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
@@ -290,12 +375,26 @@
 	<!-- Add by frank -->
 	<script src="./js/pixastic.custom.js"></script>
 	<script src='http://connect.facebook.net/en_US/all.js'></script><!-- Facebook Javascript SDK -->
-    <script src="./js/main/facebook.js"></script>
     <script src="./js/main/utily.js"></script>
  	<script src="./js/main/imageDisplay.js"></script>
  	<script src="./js/ajaxfileupload.js"></script>
 	<script src="./js/main/jquery-image-dragged-area.js"></script>
+
+	<!-- File upload -->
+    <script src="./js/fileupload/jquery.ui.widget.js"></script>
+    <script src="./js/fileupload/jquery.iframe-transport.js"></script>
+    <script src="./js/fileupload/jquery.fileupload.js"></script>
+    <script src="./js/fileupload/jquery.fileupload-process.js"></script>
+    <script src="./js/fileupload/jquery.fileupload-image.js"></script>
+    <script src="./js/fileupload/jquery.fileupload-validate.js"></script>
+
+    <!-- Main Logic -->
     <script src="./js/main/main.js"></script>
 
+	<script>
+	$(document).bind('drop dragover', function (e) {
+	    e.preventDefault();
+	});
+	</script>
   </body>
 </html>
