@@ -60,13 +60,16 @@ app.post('/login/authenticate', login.authenticate);
 app.get('/logout', login.logout);
 
 // Facebook OAuth Authentication
-app.get('/auth/facebook',passport.authenticate('facebook', { scope: ['read_stream', 'publish_actions', 'read_friendlists'] }) );
+app.get('/auth/facebook',passport.authenticate('facebook', {
+	scope: ['read_stream', 'publish_actions', 'read_friendlists', 'manage_notifications']
+}) );
 
 // Facebook OAuth Code Callback (first handshake)
 app.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/main', failureRedirect: '/' }) );
 
 app.post('/game/create', game.create);
 app.get('/game/list', game.list);
+app.get('/game/getImg/:name', game.getImg);
 
 
 /* ---------------------------------------------------------------------------- */

@@ -289,6 +289,7 @@
 			    <button class="btn" data-dismiss="modal" aria-hidden="true" id="setupDialogGameCancel">Cancel</button>
 			    <button class="btn btn-primary disabled" id="setupDialogGameCreate">Create</button>
 			  </div>
+
 			</div>
 
 
@@ -301,13 +302,30 @@
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			    <h3 id="myModalLabel">Guessing</h3>
 			  </div>
-			  <div class="modal-body">
-			    <p>One fine body…</p>
+			  <div class="modal-body" style="text-align:center;padding:10px;">
+
+					<!-- Time Progress Bar -->
+					<div class="progress progress-striped active" id="timeProgressPlayDialog">
+					  <div class="bar bar-success" style="width:100%;display:block;" id="timeCountingBarPlayDialog"></div>
+					</div>
+
+					<!-- Guess Image -->
+					<img src="" id="guessImg" alt="guess_img" style="display:none" />
+							        	<!-- Preview Zone -->
+		        	<div id="playZone" class="container alert alert-info" style="width:400px;height:auto;text-align:center;">
+					</div>
+
 			  </div>
-			  <div class="modal-footer">
-			    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			    <button class="btn btn-primary">Save changes</button>
-			  </div>
+				<div class="modal-footer">
+					<div style="float:left;">
+						<h5 style="display:inline;margin-right:20px;">Click the correct user</h5>
+						<input type="text" class="search-query" placeholder="Search" id="searchBar">
+					</div>
+					<hr/>
+					<div id="friendList" style="text-align:left;height:200px;overflow:auto;"></div>
+
+				</div>
+
 			</div>
 
 
@@ -389,6 +407,7 @@
     <script src="./js/fileupload/jquery.fileupload-validate.js"></script>
 
     <!-- Main Logic -->
+    <script src="./js/main/bootstrap-progressbar.js"></script>
     <script src="./js/main/main.js"></script>
 
 	<script>
